@@ -1,0 +1,54 @@
+---
+title: "R code Hypothesis Test"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#read in csv file
+library(readr)
+df <- read_csv("/Users/joeathas/Documents/GitHub/ds710fall2018finalproject/sentiments (2).csv")
+#make first column row names
+result <- df[-1]
+row.names(result) <- df$Hashtag
+dfp<-result
+```
+
+```{r}
+#Balloon Plot to visualize 
+library("gplots")
+# 1. convert the data as a table
+dt <- as.table(as.matrix(dfp))
+# 2. Graph
+balloonplot(t(dt), main ="Hashtag Sentiment Data", xlab ="Sentiment", ylab="Hashtags",  label.size=.85,
+            label = T, show.margins = FALSE)
+```
+```{r}
+#remove "n tweets" row in order to do analysis
+dt<-dt[,1:3]
+```
+
+```{r}
+#Do Chi-Square
+chisq <- chisq.test(dt)
+chisq
+```
+
+```{r}
+#Do Post-Hoc Tests
+library(fifer)
+x<-chisq.post.hoc(dt)
+print(x)
+```
+
+```{r}
+library(kableExtra)
+#Import and make table of Observed proportions of hashtags
+Proportions <- read_csv("/Users/joeathas/Documents/GitHub/ds710fall2018finalproject/Proportions.csv")
+kable(Proportions,align = 'c')
+  
+
+```
